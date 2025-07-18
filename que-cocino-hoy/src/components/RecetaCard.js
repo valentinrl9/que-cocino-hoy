@@ -17,14 +17,14 @@ function RecetaCard({ receta, agregarFavorita }) {
     <div className="receta" onClick={irADetalle} style={{ cursor: 'pointer' }}>
       <h3>{receta.strMeal}</h3>
       <img src={receta.strMealThumb} alt={receta.strMeal} />
-      <button
+      {/* <button
         onClick={(e) => {
           e.stopPropagation();
           agregarFavorita(receta);
         }}
       >
         ⭐ Guardar favorita
-      </button>
+      </button> */}
     </div>
   );
 }

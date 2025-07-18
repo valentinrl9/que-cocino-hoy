@@ -127,7 +127,7 @@ function Home() {
         ))}
       </div>
 
-      <Favoritas favoritas={favoritas} eliminarFavorita={eliminarFavorita} />
+      {/* <Favoritas favoritas={favoritas} eliminarFavorita={eliminarFavorita} /> */}
     </>
   );
 }
