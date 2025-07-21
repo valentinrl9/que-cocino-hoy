@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Buscador from '../components/Buscador';
 import RecetaCard from '../components/RecetaCard';
 import Favoritas from '../components/Favoritas';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [ingredientes, setIngredientes] = useState('');
@@ -9,6 +10,7 @@ function Home() {
   const [favoritas, setFavoritas] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const categoriasEspañol = [
     { label: 'Acompañamiento', value: 'Side' },
@@ -76,12 +78,15 @@ function Home() {
     try {
       const response = await fetch(`https://www.themealdb.com/api/json/v1/1/random.php`);
       const data = await response.json();
-      setRecetas(data.meals);
+      const receta = data.meals[0];
       setError(null);
+
+      // 🔀 Navegar al detalle con el ID de la receta aleatoria
+      navigate(`/receta/${receta.idMeal}`, { state: { from: '/' } });
     } catch (err) {
       setError('No se pudo cargar la receta aleatoria.');
     }
-  };
+};
 
   const agregarFavorita = (receta) => {
     if (!favoritas.some((fav) => fav.idMeal === receta.idMeal)) {

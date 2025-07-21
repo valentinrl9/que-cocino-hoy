@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
+
 function DetalleReceta() {
   const { id } = useParams();
   const navigate = useNavigate();
