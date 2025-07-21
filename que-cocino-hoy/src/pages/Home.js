@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Buscador from '../components/Buscador';
-import Filtros from '../components/Filtros';
 import RecetaCard from '../components/RecetaCard';
 import Favoritas from '../components/Favoritas';
 
@@ -8,9 +7,26 @@ function Home() {
   const [ingredientes, setIngredientes] = useState('');
   const [recetas, setRecetas] = useState([]);
   const [favoritas, setFavoritas] = useState([]);
-  const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [error, setError] = useState(null);
+
+  const categoriasEspañol = [
+    { label: 'Acompañamiento', value: 'Side' },
+    { label: 'Cabra', value: 'Goat' },
+    { label: 'Cerdo', value: 'Pork' },
+    { label: 'Cordero', value: 'Lamb' },
+    { label: 'Desayuno', value: 'Breakfast' },
+    { label: 'Entrante', value: 'Starter' },
+    { label: 'Pasta', value: 'Pasta' },
+    { label: 'Pollo', value: 'Chicken' },
+    { label: 'Postre', value: 'Dessert' },
+    { label: 'Mariscos', value: 'Seafood' },
+    { label: 'Ternera', value: 'Beef' },
+    { label: 'Vegano', value: 'Vegan' },
+    { label: 'Vegetariano', value: 'Vegetarian' },
+    { label: 'Miscelánea', value: 'Miscellaneous' }
+
+  ];
 
   useEffect(() => {
     const guardadas = localStorage.getItem('favoritas');
@@ -20,20 +36,6 @@ function Home() {
   useEffect(() => {
     localStorage.setItem('favoritas', JSON.stringify(favoritas));
   }, [favoritas]);
-
-  useEffect(() => {
-    const cargarCategorias = async () => {
-      try {
-        const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
-        const data = await response.json();
-        const categoriasExtraidas = data.meals.map((cat) => cat.strCategory);
-        setCategorias(categoriasExtraidas);
-      } catch (err) {
-        console.error('Error al cargar categorías');
-      }
-    };
-    cargarCategorias();
-  }, []);
 
   const buscarRecetas = async () => {
     if (!ingredientes.trim()) {
@@ -108,12 +110,24 @@ function Home() {
         </div>
       </div>
 
-      <Filtros
-        categorias={categorias}
-        categoriaSeleccionada={categoriaSeleccionada}
-        setCategoriaSeleccionada={setCategoriaSeleccionada}
-        buscarPorCategoria={buscarPorCategoria}
-      />
+      {/* 🎯 Select con categorías en español */}
+      <div className="filtros">
+        <select
+          value={categoriaSeleccionada}
+          onChange={(e) => {
+            const selectedValue = e.target.value;
+            setCategoriaSeleccionada(selectedValue);
+            buscarPorCategoria(selectedValue);
+          }}
+        >
+          <option value="">-- Selecciona una categoría --</option>
+          {categoriasEspañol.map((cat) => (
+            <option key={cat.value} value={cat.value}>
+              {cat.label}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {error && <p className="error">{error}</p>}
 
