@@ -147,3 +147,24 @@ button:hover {
 select {
   margin-left: 0.5rem;
 }
+
+
+@media (max-width: 600px) {
+  .App {
+    padding: 1rem;
+  }
+
+  .receta {
+    width: 100%;
+  }
+
+  .detalle-receta img {
+    width: 100%;
+    height: auto;
+  }
+
+  button {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
