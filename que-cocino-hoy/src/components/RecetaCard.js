@@ -1,17 +1,19 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-function RecetaCard({ receta, agregarFavorita }) {
+function RecetaCard({ receta, agregarFavorita, ingredientes, categoriaSeleccionada, recetas }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const irADetalle = () => {
-    navigate(`/receta/${receta.idMeal}`, {
-      state: {
-        from: location.pathname,
-      },
-    });
-  };
+const irADetalle = () => {
+  sessionStorage.setItem('busquedaActual', JSON.stringify({
+    ingredientes,
+    categoriaSeleccionada,
+    recetas
+  }));
+
+  navigate(`/receta/${receta.idMeal}`);
+};
 
   return (
     <div className="receta" onClick={irADetalle} style={{ cursor: 'pointer' }}>

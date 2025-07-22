@@ -23,11 +23,7 @@ function DetalleReceta() {
   }, [id]);
 
   const volver = () => {
-    if (location.state?.from) {
-      navigate(location.state.from);
-    } else {
-      navigate('/');
-    }
+    navigate(-1);
   };
 
   if (error) return <p className="error">{error}</p>;

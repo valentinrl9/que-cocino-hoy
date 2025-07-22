@@ -27,8 +27,18 @@ function Home() {
     { label: 'Vegano', value: 'Vegan' },
     { label: 'Vegetariano', value: 'Vegetarian' },
     { label: 'Miscelánea', value: 'Miscellaneous' }
-
   ];
+
+  // ✅ Restaurar estado desde sessionStorage
+  useEffect(() => {
+    const busquedaGuardada = sessionStorage.getItem('busquedaActual');
+    if (busquedaGuardada) {
+      const { ingredientes, categoriaSeleccionada, recetas } = JSON.parse(busquedaGuardada);
+      setIngredientes(ingredientes || '');
+      setCategoriaSeleccionada(categoriaSeleccionada || '');
+      setRecetas(recetas || []);
+    }
+  }, []);
 
   useEffect(() => {
     const guardadas = localStorage.getItem('favoritas');
@@ -81,12 +91,18 @@ function Home() {
       const receta = data.meals[0];
       setError(null);
 
-      // 🔀 Navegar al detalle con el ID de la receta aleatoria
-      navigate(`/receta/${receta.idMeal}`, { state: { from: '/' } });
+      // 🚀 Guardar búsqueda actual antes de navegar
+      sessionStorage.setItem('busquedaActual', JSON.stringify({
+        ingredientes,
+        categoriaSeleccionada,
+        recetas
+      }));
+
+      navigate(`/receta/${receta.idMeal}`);
     } catch (err) {
       setError('No se pudo cargar la receta aleatoria.');
     }
-};
+  };
 
   const agregarFavorita = (receta) => {
     if (!favoritas.some((fav) => fav.idMeal === receta.idMeal)) {
@@ -142,6 +158,9 @@ function Home() {
             key={receta.idMeal}
             receta={receta}
             agregarFavorita={agregarFavorita}
+            ingredientes={ingredientes}
+            categoriaSeleccionada={categoriaSeleccionada}
+            recetas={recetas}
           />
         ))}
       </div>
