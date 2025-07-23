@@ -29,7 +29,6 @@ function Home() {
     { label: 'Miscelánea', value: 'Miscellaneous' }
   ];
 
-  // ✅ Restaurar estado desde sessionStorage
   useEffect(() => {
     const busquedaGuardada = sessionStorage.getItem('busquedaActual');
     if (busquedaGuardada) {
@@ -89,9 +88,7 @@ function Home() {
       const response = await fetch(`https://www.themealdb.com/api/json/v1/1/random.php`);
       const data = await response.json();
       const receta = data.meals[0];
-      setError(null);
 
-      // 🚀 Guardar búsqueda actual antes de navegar
       sessionStorage.setItem('busquedaActual', JSON.stringify({
         ingredientes,
         categoriaSeleccionada,
@@ -115,58 +112,58 @@ function Home() {
   };
 
   return (
-    <>
-      <div className="hero">
-        <div className="hero-texto">
-          <h1>¿Qué cocino hoy?</h1>
-          <p>Descubre recetas deliciosas según lo que tienes en casa</p>
-        </div>
-        <div className="buscador">
-          <Buscador
-            ingredientes={ingredientes}
-            setIngredientes={setIngredientes}
-            buscarRecetas={buscarRecetas}
-            buscarAleatoria={buscarAleatoria}
-          />
-        </div>
-      </div>
+    <div className="home-container">
+      
+      <section className="hero">
+        <img src="/img/hero.png" alt="¿Qué cocino hoy?" className="hero-img" />
+      </section>
 
-      {/* 🎯 Select con categorías en español */}
-      <div className="filtros">
-        <select
-          value={categoriaSeleccionada}
-          onChange={(e) => {
-            const selectedValue = e.target.value;
-            setCategoriaSeleccionada(selectedValue);
-            buscarPorCategoria(selectedValue);
-          }}
-        >
-          <option value="">-- Selecciona una categoría --</option>
-          {categoriasEspañol.map((cat) => (
-            <option key={cat.value} value={cat.value}>
-              {cat.label}
-            </option>
+
+      <section className="busqueda-section">
+        <Buscador
+          ingredientes={ingredientes}
+          setIngredientes={setIngredientes}
+          buscarRecetas={buscarRecetas}
+          buscarAleatoria={buscarAleatoria}
+        />
+        <div className="filtros">
+          <label htmlFor="categoria-select" className="filtros-label">
+             Buscar por categoría:
+          </label>
+          <select
+            value={categoriaSeleccionada}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              setCategoriaSeleccionada(selectedValue);
+              buscarPorCategoria(selectedValue);
+            }}
+          >
+            <option value="">-- Categoría --</option>
+            {categoriasEspañol.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        {error && <p className="error">{error}</p>}
+      </section>
+
+      <section className="recetas-section">
+        <div className="recetas">
+          {recetas.map((receta) => (
+            <RecetaCard
+              key={receta.idMeal}
+              receta={receta}
+              agregarFavorita={agregarFavorita}
+              ingredientes={ingredientes}
+              categoriaSeleccionada={categoriaSeleccionada}
+              recetas={recetas}
+            />
           ))}
-        </select>
-      </div>
-
-      {error && <p className="error">{error}</p>}
-
-      <div className="recetas">
-        {recetas.map((receta) => (
-          <RecetaCard
-            key={receta.idMeal}
-            receta={receta}
-            agregarFavorita={agregarFavorita}
-            ingredientes={ingredientes}
-            categoriaSeleccionada={categoriaSeleccionada}
-            recetas={recetas}
-          />
-        ))}
-      </div>
-
-      {/* <Favoritas favoritas={favoritas} eliminarFavorita={eliminarFavorita} /> */}
-    </>
+        </div>
+      </section>
+    </div>
   );
 }
 

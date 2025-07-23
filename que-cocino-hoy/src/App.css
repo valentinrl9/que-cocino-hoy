@@ -1,170 +1,269 @@
-/* Reset y base */
+/* --------------------------------------------------
+   Fuente principal
+-------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* --------------------------------------------------
+   Estilos base
+-------------------------------------------------- */
 body {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #aafca4;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.App {
-  max-width: 800px;
-  margin: auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-/* Hero actualizado */
-.hero {
-  position: relative;
-  width: 100%;
-  height: 45vh;
-  background-image: url('/public/img/hero2.png');
+  font-family: 'Poppins', sans-serif;
+  background-image: url('/public/img/fondo-saludable.jpg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  clip-path: ellipse(100% 85% at 50% 100%);
-  overflow: hidden;
-  margin-bottom: 2rem;
+  background-attachment: fixed;
+  color: #333;
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 1;
+/* --------------------------------------------------
+   Contenedor general
+-------------------------------------------------- */
+.home-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
 }
 
-.hero-texto {
-  position: relative;
-  z-index: 2;
-  color: white;
+/* --------------------------------------------------
+   Hero / Cabecera inicial
+-------------------------------------------------- */
+.hero-img {
+  width: 100%;
+  height: 50%;
+  border-radius: 20px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+
+
+/* --------------------------------------------------
+   Buscador y filtros
+-------------------------------------------------- */
+.busqueda-section {
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 2rem;
+  border-radius: 16px;
   text-align: center;
-  padding: 1rem 2rem;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-}
-
-.hero-texto h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.hero-texto p {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-/* Buscador dentro del hero */
-.hero .buscador {
-  position: relative;
-  z-index: 2;
-  margin-top: 1rem;
   margin-bottom: 2rem;
 }
 
-/* Buscador y filtros */
 .buscador,
 .filtros {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-input,
-select {
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  width: 250px;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: green;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: rgb(1, 87, 1);
-}
-
-/* Mensaje de error */
-.error {
-  color: red;
   margin-top: 1rem;
 }
 
-/* Recetas */
-.recetas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
+.filtros-label {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: underline;
+}
+
+
+input,
+select {
+  padding: 0.8rem;
+  width: 250px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Botones generales */
+button,
+.sorprendeme-btn {
+  background-color: green;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+button:hover,
+.sorprendeme-btn:hover {
+  background-color: #019875;
+}
+
+/* --------------------------------------------------
+   Mensajes y errores
+-------------------------------------------------- */
+.error {
+  color: #ff5252;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.cargando {
+  font-style: italic;
+  color: #666;
+  text-align: center;
   margin-top: 2rem;
+}
+
+/* --------------------------------------------------
+   Vista de recetas
+-------------------------------------------------- */
+.recetas-section {
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 2rem;
+  border-radius: 16px;
+}
+
+.recetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
 }
 
 .receta {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
   padding: 1rem;
-  width: 200px;
+  transition: transform 0.2s ease;
+  text-align: center;
+}
+
+.receta:hover {
+  transform: translateY(-5px);
 }
 
 .receta img {
   width: 100%;
-  border-radius: 4px;
-}
-
-/* Detalle receta */
-.detalle-receta {
-  background-color: #fff;
-  margin-top: 2rem;
-  padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  text-align: left;
 }
 
-/* Filtros */
-.filtros {
-  margin-top: 1rem;
+/* --------------------------------------------------
+   Detalle de receta
+-------------------------------------------------- */
+.detalle-receta {
+  position: relative;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #2e2e2e;
+}
+
+.detalle-receta h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.detalle-receta img {
+  max-width: 350px;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.detalle-receta p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
   margin-bottom: 1rem;
 }
 
-select {
-  margin-left: 0.5rem;
+/* --------------------------------------------------
+   Botón de cierre (aspa) en detalle
+-------------------------------------------------- */
+.cerrar-detalle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: transparent;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.cerrar-detalle::before {
+  font-size: 1.4rem;
+  line-height: 1;
+}
 
+.cerrar-detalle:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: scale(1.05);
+}
+
+/* --------------------------------------------------
+   Responsive
+-------------------------------------------------- */
 @media (max-width: 600px) {
-  .App {
+  .home-container {
     padding: 1rem;
   }
 
-  .receta {
-    width: 100%;
-  }
-
-  .detalle-receta img {
-    width: 100%;
-    height: auto;
+  .recetas {
+    grid-template-columns: 1fr;
   }
 
   button {
     width: 100%;
     margin-bottom: 1rem;
+  }
+
+  input,
+  select {
+    width: 100%;
+  }
+
+  .hero-texto h1 {
+    font-size: 2rem;
+  }
+
+  .hero-texto p {
+    font-size: 1rem;
+  }
+
+  .detalle-receta {
+    padding: 1rem;
+  }
+
+  .detalle-receta img {
+    max-width: 100%;
+  }
+
+  .detalle-receta h2 {
+    font-size: 1.5rem;
+  }
+
+  .detalle-receta p {
+    font-size: 1rem;
   }
 }

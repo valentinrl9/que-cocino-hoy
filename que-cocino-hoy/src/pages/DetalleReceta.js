@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
 
 function DetalleReceta() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const [receta, setReceta] = useState(null);
   const [error, setError] = useState(null);
 
@@ -22,17 +20,18 @@ function DetalleReceta() {
     cargarReceta();
   }, [id]);
 
-  const volver = () => {
-    navigate(-1);
-  };
-
   if (error) return <p className="error">{error}</p>;
-  if (!receta) return <p>Cargando receta...</p>;
+  if (!receta) return <p className="cargando">Cargando receta...</p>;
 
   return (
     <div className="detalle-receta">
-      <button onClick={volver} style={{ marginBottom: '1rem' }}>
-        ← Volver
+      <button
+        className="cerrar-detalle"
+        onClick={() => navigate(-1)}
+        aria-label="Volver"
+        title="Cerrar"
+      >
+        ✖
       </button>
 
       <h2>{receta.strMeal}</h2>
