@@ -267,3 +267,22 @@ button:hover,
     font-size: 1rem;
   }
 }
+
+
+
+.sugerencia-link {
+  display: inline-block;
+  margin: 6px 10px 6px 0;
+  padding: 8px 14px;
+  color: black;
+  text-decoration: underline;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1.05rem;
+  transition: background-color 0.2s ease;
+}
+
+.sugerencia-link:hover {
+  background-color: #79d84e;
+}
+
