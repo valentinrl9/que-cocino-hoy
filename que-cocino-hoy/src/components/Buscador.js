@@ -3,7 +3,7 @@ function Buscador({ ingredientes, setIngredientes, buscarRecetas, buscarAleatori
     <div className="buscador">
       <input
         type="text"
-        placeholder="Ej: pollo, arroz"
+        placeholder="Ingrediente principal"
         value={ingredientes}
         onChange={(e) => setIngredientes(e.target.value)}
       />
