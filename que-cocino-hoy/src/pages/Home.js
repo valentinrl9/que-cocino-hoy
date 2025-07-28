@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import  ingredientesTraducidos  from '../utils/ingredientesTraducidos.json';
 import { distance } from 'fastest-levenshtein';
 import '../App.css';
-
+import { traducirTexto } from '../utils/traductor';
 
 
 function Home() {
@@ -54,6 +54,17 @@ function Home() {
   }, [favoritas]);
 
 
+  const traducirNombresRecetas = async (recetas) => {
+    return await Promise.all(
+      recetas.map(async (receta) => {
+        const nombreTraducido = await traducirTexto(receta.strMeal);
+        return {
+          ...receta,
+          strMeal: nombreTraducido || receta.strMeal
+        };
+      })
+    );
+  };
 
  const quitarAcentos = (str) =>
   str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");

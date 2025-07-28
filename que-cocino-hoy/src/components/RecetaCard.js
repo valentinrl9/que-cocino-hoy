@@ -19,14 +19,6 @@ const irADetalle = () => {
     <div className="receta" onClick={irADetalle} style={{ cursor: 'pointer' }}>
       <h3>{receta.strMeal}</h3>
       <img src={receta.strMealThumb} alt={receta.strMeal} />
-      {/* <button
-        onClick={(e) => {
-          e.stopPropagation();
-          agregarFavorita(receta);
-        }}
-      >
-        ⭐ Guardar favorita
-      </button> */}
     </div>
   );
 }

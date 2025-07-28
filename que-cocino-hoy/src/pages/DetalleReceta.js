@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { traducirTexto } from '../utils/traductor';
 
 function DetalleReceta() {
   const { id } = useParams();
@@ -12,11 +13,39 @@ function DetalleReceta() {
       try {
         const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
         const data = await response.json();
-        setReceta(data.meals[0]);
+        const recetaOriginal = data.meals?.[0];
+
+        if (!recetaOriginal) {
+          setError('No se encontró la receta.');
+          return;
+        }
+
+        // ⚡ Mostrar receta original sin traducir
+        setReceta(recetaOriginal);
+
+        // ⚡ Traducción en paralelo
+        const textos = [
+          recetaOriginal.strMeal,
+          recetaOriginal.strCategory,
+          recetaOriginal.strArea,
+          recetaOriginal.strInstructions,
+        ];
+
+        const traducciones = await Promise.all(textos.map(t => traducirTexto(t)));
+
+        setReceta(prev => ({
+          ...prev,
+          strMeal: traducciones[0] || prev.strMeal,
+          strCategory: traducciones[1] || prev.strCategory,
+          strArea: traducciones[2] || prev.strArea,
+          strInstructions: traducciones[3] || prev.strInstructions,
+        }));
       } catch (err) {
+        console.error('Error cargando receta:', err);
         setError('No se pudo cargar la receta.');
       }
     };
+
     cargarReceta();
   }, [id]);
 
