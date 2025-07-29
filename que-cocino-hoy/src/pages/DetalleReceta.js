@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { traducirTexto } from '../utils/traductor';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 function DetalleReceta() {
   const { id } = useParams();
@@ -20,10 +21,6 @@ function DetalleReceta() {
           return;
         }
 
-        // ⚡ Mostrar receta original sin traducir
-        setReceta(recetaOriginal);
-
-        // ⚡ Traducción en paralelo
         const textos = [
           recetaOriginal.strMeal,
           recetaOriginal.strCategory,
@@ -33,13 +30,15 @@ function DetalleReceta() {
 
         const traducciones = await Promise.all(textos.map(t => traducirTexto(t)));
 
-        setReceta(prev => ({
-          ...prev,
-          strMeal: traducciones[0] || prev.strMeal,
-          strCategory: traducciones[1] || prev.strCategory,
-          strArea: traducciones[2] || prev.strArea,
-          strInstructions: traducciones[3] || prev.strInstructions,
-        }));
+        const recetaTraducida = {
+          ...recetaOriginal,
+          strMeal: traducciones[0] || recetaOriginal.strMeal,
+          strCategory: traducciones[1] || recetaOriginal.strCategory,
+          strArea: traducciones[2] || recetaOriginal.strArea,
+          strInstructions: traducciones[3] || recetaOriginal.strInstructions,
+        };
+
+        setReceta(recetaTraducida);
       } catch (err) {
         console.error('Error cargando receta:', err);
         setError('No se pudo cargar la receta.');
@@ -50,7 +49,20 @@ function DetalleReceta() {
   }, [id]);
 
   if (error) return <p className="error">{error}</p>;
-  if (!receta) return <p className="cargando">Cargando receta...</p>;
+
+  if (!receta) {
+    return (
+      <div className="spinner-carga">
+        <Player
+          autoplay
+          loop
+          src="/img/Kitchen.json" // ✅ No uses process.env.PUBLIC_URL con Lottie
+          style={{ height: '250px', width: '250px' }}
+        />
+        <p className="mensaje-carga">👨‍🍳 Oído cocina</p>
+      </div>
+    );
+  }
 
   return (
     <div className="detalle-receta">
