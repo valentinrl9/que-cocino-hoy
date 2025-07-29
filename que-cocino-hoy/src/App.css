@@ -271,19 +271,18 @@ button:hover,
 
 
 .sugerencia-link {
-  display: inline-block;
-  margin: 6px 10px 6px 0;
-  padding: 8px 14px;
-  color: black;
+  background: none;
+  border: none;
+  color: rgb(0, 0, 0);
   text-decoration: underline;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1.05rem;
-  transition: background-color 0.2s ease;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
 }
 
+
 .sugerencia-link:hover {
-  background-color: #79d84e;
+  background-color: rgb(88, 158, 3);
 }
 
 

@@ -173,11 +173,8 @@ function Home() {
     }
   };
 
-  const eliminarFavorita = (id) => {
-    setFavoritas(favoritas.filter(receta => receta.idMeal !== id));
-  };
-
   
+
   return (
     <div className="home-container">
       
@@ -221,20 +218,18 @@ function Home() {
       <strong>¿Querías decir:</strong>{' '}
       {sugerencias
         .map((sugerida) => (
-          <a
-            key={sugerida}
+          <button
+            type="button"
             className="sugerencia-link"
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
               setIngredientes(sugerida);
-              setSugerencias([]);     // 👈 Limpia las sugerencias
-              setError(null);         // (Opcional) Limpia el mensaje de error
-              buscarRecetas(sugerida); // Ejecuta búsqueda directa
+              setSugerencias([]);
+              setError(null);
+              buscarRecetas(sugerida);
             }}
           >
             {sugerida}
-          </a>
+          </button>
         ))
         .reduce((prev, curr) => [prev, ', ', curr])}
       ?
