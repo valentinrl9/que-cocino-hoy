@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Buscador from '../components/Buscador';
 import RecetaCard from '../components/RecetaCard';
 import { useNavigate } from 'react-router-dom';
-import  ingredientesTraducidos  from '../utils/ingredientesTraducidos.json';
+import ingredientesTraducidos from '../utils/ingredientesTraducidos.json';
 import { distance } from 'fastest-levenshtein';
 import '../App.css';
 import { traducirTexto } from '../utils/traductor';
-
 
 function Home() {
   const [ingredientes, setIngredientes] = useState('');
@@ -53,91 +52,96 @@ function Home() {
     localStorage.setItem('favoritas', JSON.stringify(favoritas));
   }, [favoritas]);
 
+  const traducirNombresRecetas = async (recetasOriginales) => {
+    // Renderiza nombres originales primero
+    setRecetas(recetasOriginales);
 
-  const traducirNombresRecetas = async (recetas) => {
-    return await Promise.all(
-      recetas.map(async (receta) => {
-        const nombreTraducido = await traducirTexto(receta.strMeal);
-        return {
-          ...receta,
-          strMeal: nombreTraducido || receta.strMeal
-        };
-      })
-    );
+    // Traduce en segundo plano y actualiza
+    try {
+      const recetasTraducidas = await Promise.all(
+        recetasOriginales.map(async (receta) => {
+          try {
+            const nombreTraducido = await traducirTexto(receta.strMeal);
+            return {
+              ...receta,
+              strMeal: nombreTraducido || receta.strMeal
+            };
+          } catch {
+            return receta;
+          }
+        })
+      );
+      setRecetas(recetasTraducidas);
+    } catch (error) {
+      console.warn('Error al traducir recetas:', error);
+    }
   };
 
- const quitarAcentos = (str) =>
-  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const quitarAcentos = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-const traducirIngredienteLocal = (texto) => {
-  const normalizado = quitarAcentos(texto.toLowerCase().trim());
-  const entrada = ingredientesTraducidos.find(i =>
-    quitarAcentos(i.es.toLowerCase()) === normalizado
-  );
-  return entrada ? entrada.en : normalizado;
-};
+  const traducirIngredienteLocal = (texto) => {
+    const normalizado = quitarAcentos(texto.toLowerCase().trim());
+    const entrada = ingredientesTraducidos.find(i =>
+      quitarAcentos(i.es.toLowerCase()) === normalizado
+    );
+    return entrada ? entrada.en : normalizado;
+  };
 
-const sugerirIngredientes = (texto) => {
-  const normalizado = quitarAcentos(texto.toLowerCase().trim());
+  const sugerirIngredientes = (texto) => {
+    const normalizado = quitarAcentos(texto.toLowerCase().trim());
 
-  const similares = ingredientesTraducidos
-    .map(i => ({
-      es: i.es,
-      en: i.en,
-      score: distance(normalizado, quitarAcentos(i.es.toLowerCase()))
-    }))
-    .sort((a, b) => a.score - b.score)
-    .filter((i) => i.score <= 3);
+    const similares = ingredientesTraducidos
+      .map(i => ({
+        es: i.es,
+        en: i.en,
+        score: distance(normalizado, quitarAcentos(i.es.toLowerCase()))
+      }))
+      .sort((a, b) => a.score - b.score)
+      .filter(i => i.score <= 3);
 
-  return similares.slice(0, 5);
-};
+    return similares.slice(0, 5);
+  };
 
+  const buscarRecetas = async () => {
+    if (!ingredientes.trim()) {
+      setError('Por favor, introduce al menos un ingrediente.');
+      setRecetas([]);
+      return;
+    }
 
-const buscarRecetas = async () => {
-  if (!ingredientes.trim()) {
-    setError('Por favor, introduce al menos un ingrediente.');
-    setRecetas([]);
-    return;
-  }
+    try {
+      const ingredienteEs = ingredientes.split(',')[0].trim();
+      const traducido = traducirIngredienteLocal(ingredienteEs);
 
-  try {
-    const ingredienteEs = ingredientes.split(',')[0].trim(); // solo el primero
-    const traducido = traducirIngredienteLocal(ingredienteEs);
       if (!traducido || traducido === ingredienteEs) {
         const sugerencias = sugerirIngredientes(ingredienteEs);
-        if (sugerencias.length > 0) {
-          setError('Ingrediente no encontrado.');
-          setSugerencias(sugerencias.map((s) => s.es)); // ← Aquí se actualiza
-        } else {
-          setError(`No se encontró el ingrediente "${ingredienteEs}".`);
-          setSugerencias([]); // ← Se limpia si no hay nada similar
-        }
+        setError(sugerencias.length > 0 ? 'Ingrediente no encontrado.' : `No se encontró el ingrediente "${ingredienteEs}".`);
+        setSugerencias(sugerencias.map(s => s.es));
         setRecetas([]);
         return;
       }
 
-    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(traducido)}`);
-    const data = await response.json();
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(traducido)}`);
+      const data = await response.json();
 
-    if (data.meals) {
-      setRecetas(data.meals);
-      setError(null);
-    } else {
+      if (data.meals) {
+        await traducirNombresRecetas(data.meals);
+        setError(null);
+      } else {
+        setRecetas([]);
+        setError('No se encontraron recetas con ese ingrediente.');
+      }
+    } catch (err) {
+      setError('Hubo un problema al buscar recetas.');
       setRecetas([]);
-      setError('No se encontraron recetas con ese ingrediente.');
     }
-  } catch (err) {
-    setError('Hubo un problema al buscar recetas.');
-    setRecetas([]);
-  }
-};
-
+  };
 
   const buscarPorCategoria = async (categoria) => {
     try {
       const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoria}`);
       const data = await response.json();
-      setRecetas(data.meals || []);
+      await traducirNombresRecetas(data.meals || []);
       setError(null);
     } catch (err) {
       setError('Hubo un problema al buscar por categoría.');
@@ -164,15 +168,16 @@ const buscarRecetas = async () => {
   };
 
   const agregarFavorita = (receta) => {
-    if (!favoritas.some((fav) => fav.idMeal === receta.idMeal)) {
+    if (!favoritas.some(fav => fav.idMeal === receta.idMeal)) {
       setFavoritas([...favoritas, receta]);
     }
   };
 
   const eliminarFavorita = (id) => {
-    setFavoritas(favoritas.filter((receta) => receta.idMeal !== id));
+    setFavoritas(favoritas.filter(receta => receta.idMeal !== id));
   };
 
+  
   return (
     <div className="home-container">
       
